@@ -41,11 +41,9 @@ app.use('/api', studenthuis_routes);
 
 app.use((err, req, res, next) => {
     console.log('Catch-all error handler was called.');
-    console.log(err.toString());
+    console.log(err);
 
-    const error = new ApiError(err.toString(), 404);
-
-    res.status(404).json(error).end();
+    res.status(err.code || 400).json(err).end();
 })
 
 

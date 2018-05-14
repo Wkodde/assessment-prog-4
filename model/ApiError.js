@@ -1,9 +1,9 @@
 class ApiError {
 
 
-    constructor(code, message){
-        this.code = code;
+    constructor(message, code){
         this.message = message;
+        this.code = code;
     }
 
     getCode(){

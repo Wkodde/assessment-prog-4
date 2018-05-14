@@ -1,14 +1,13 @@
-
-let express = require('express')
-let routes = express.Router()
-let authenticationcontroller = require('../controllers/authentication_controller')
+const express = require('express');
+const routes = express.Router();
+const authenticationcontroller = require('../controllers/authentication_controller');
 
 
 // hier schrijven we router endpoints
 
-routes.post('/api/login', authenticationcontroller.readUser())
-routes.post('/api/register', authenticationcontroller.createUser())
+routes.post('/login', authenticationcontroller.readUser);
+routes.post('/register', authenticationcontroller.createUser);
 
 
 
-module.exports = routes
+module.exports = routes;

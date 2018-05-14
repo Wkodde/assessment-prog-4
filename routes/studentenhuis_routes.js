@@ -1,16 +1,15 @@
-
-let express = require('express')
-let routes = express.Router()
-let studentenhuiscontroller = require('../controllers/studentenhuis_controller')
+const express = require('express');
+const routes = express.Router();
+const studentenhuiscontroller = require('../controllers/studentenhuis_controller');
 
 
 // hier schrijven we router endpoints
 
-routes.post('/api/studentenhuis', studentenhuiscontroller.createStudenthuis())
-routes.get('/api/studentenhuis', studentenhuiscontroller.readStudentenhuis())
-routes.get('/api/studentenhuis/:id', studentenhuiscontroller.getStudentenhuisById())
-routes.put('/api/studentenhuis/:id', studentenhuiscontroller.updateStudentenhuis())
-routes.delete('/api/studentenhuis/:id', studentenhuiscontroller.deleteStudentenhuis())
+routes.post('/studentenhuis', studentenhuiscontroller.createStudenthuis);
+routes.get('/studentenhuis', studentenhuiscontroller.readStudentenhuis);
+routes.get('/studentenhuis/:id', studentenhuiscontroller.getStudentenhuisById);
+routes.put('/studentenhuis/:id', studentenhuiscontroller.updateStudentenhuis);
+routes.delete('/studentenhuis/:id', studentenhuiscontroller.deleteStudentenhuis);
 
 
-module.exports = routes
+module.exports = routes;

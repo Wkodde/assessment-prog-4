@@ -10,6 +10,8 @@ const config = require("./config/config")
 const port = process.env.PORT || config.port || 3000
 const ApiError = require('./model/ApiError')
 const studenthuis_routes = require('./routes/studentenhuis_routes')
+const authentication_routes = require('./routes/authentication_routes');
+const authentication_controller = require('./controllers/authentication_controller');
 
 
 /**
@@ -28,24 +30,22 @@ app.use(morgan('dev'));
  * -------------------
  */
 
- //app.use('/api/', auth);
+app.use('/api', authentication_routes);
 
-app.use('*', function(req, res, next){
-    next()
-})
+app.all('*', authentication_controller.validateToken);
 
 
-app.use('/api', studenthuis_routes)
+app.use('/api', studenthuis_routes);
 
 
 
 app.use((err, req, res, next) => {
-    console.log('Catch-all error handler was called.')
-    console.log(err.toString())
+    console.log('Catch-all error handler was called.');
+    console.log(err.toString());
 
-    const error = new ApiError(err.toString(), 404)
+    const error = new ApiError(err.toString(), 404);
 
-    res.status(404).json(error).end()
+    res.status(404).json(error).end();
 })
 
 

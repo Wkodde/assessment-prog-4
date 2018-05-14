@@ -5,11 +5,11 @@ const mealcontroller = require('../controllers/meal_controller');
 
 // hier schrijven we router endpoints
 
-routes.post('/api/studentenhuis/:huisId/maaltijd', mealcontroller.createMeal);
-routes.get('/api/studentenhuis/:huisId/maaltijd', mealcontroller.readMeal);
-routes.get('/api/studentenhuis/:huisId/maaltijd/:maaltijdId', mealcontroller.getMealById);
-routes.put('/api/studentenhuis/:huisId/maaltijd/:maaltijdId', mealcontroller.updateMeal);
-routes.delete('/api/studentenhuis/:huisId/maaltijd/:maaltijdId', mealcontroller.deleteMeal);
+routes.post('/studentenhuis/:huisId/maaltijd', mealcontroller.createMeal);
+routes.get('/studentenhuis/:huisId/maaltijd', mealcontroller.readMeal);
+routes.get('/studentenhuis/:huisId/maaltijd/:maaltijdId', mealcontroller.getMealById);
+routes.put('/studentenhuis/:huisId/maaltijd/:maaltijdId', mealcontroller.updateMeal);
+routes.delete('/studentenhuis/:huisId/maaltijd/:maaltijdId', mealcontroller.deleteMeal);
 
 
 module.exports = routes;

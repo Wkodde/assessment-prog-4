@@ -34,8 +34,8 @@ app.use('/api', authentication_routes);
 
 app.all('*', authentication_controller.validateToken);
 
-
 app.use('/api', studenthuis_routes);
+
 
 
 

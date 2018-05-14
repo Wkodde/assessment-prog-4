@@ -26,7 +26,7 @@ module.exports = {
         let salt = Bcrypt.genSaltSync(10);
         let hash = Bcrypt.hashSync(password, salt);
        
-        let user = new User(0, firstname, lastname, email, password);
+        let user = new User(0, firstname, lastname, email, hash);
 
         values = [[user.firstname, user.lastname, user.email, user.password]];
 

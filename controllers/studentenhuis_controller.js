@@ -3,7 +3,7 @@ let Studentenhuis = require('../model/Studentenhuis');
 const assert = require('assert');
 const moment = require('moment');
 const ApiError = require('../model/ApiError');
-const connection = require('../model/database_connection');
+const conn = require('../model/database_connection');
 
 let studentenhuisList = [];
 
@@ -15,9 +15,9 @@ module.exports = {
             const naam = req.body.naam;
             const adres = req.body.adres;
 
-            const ID = req.user.id;
-            const contact = req.user.firstname + " " + req.user.lastname;
-            const email = req.user.email;
+            const ID = req.payload.user.id;
+            const contact = req.payload.user.firstname + " " + req.payload.user.lastname;
+            const email = req.payload.user.email;
 
             
             assert(naam, 'Naam is vereist');
@@ -33,10 +33,11 @@ module.exports = {
                 } else {
                     studenthuis.setID(result.insertId);
                     console.log("Success!");
+
+                    res.status(200).json(studenthuis).end();                    
                 }
             });
 
-            res.status(200).json(studenthuis).end();
         } catch (ex) {
             throw(new ApiError(ex.message, 412))
         }
@@ -46,7 +47,7 @@ module.exports = {
 
     readStudentenhuis(req, res, next) {
 
-        connection.query('SELECT * FROM view_studentenhuis', function (err, result) {
+        conn.query('SELECT * FROM view_studentenhuis', function (err, result) {
 
             if (err){
                 next(new ApiError(err.message, 412));
@@ -70,7 +71,7 @@ module.exports = {
                 if (err) {
                     next(new ApiError(err.message, 404));
                 } else {
-                    if (result.UserID === req.user.id) {
+                    if (result.UserID === req.payload.user.id) {
 
                         const naam = req.body.naam;
                         const adres = req.body.adres;
@@ -108,7 +109,7 @@ module.exports = {
                 if (err) {
                     next(new ApiError(err.message, 404));
                 } else {
-                    if (result.UserID === req.user.id) {
+                    if (result.UserID === req.payload.user.id) {
                         conn.query('DELETE FROM studentenhuis WHERE ID = ?', huisId, function (err, result) {
                             if(err) {
                                 next(new ApiError(err.message, 404));
@@ -131,7 +132,7 @@ module.exports = {
 
         const huisId = req.params.id;
         if(typeof huisId !== 'undefined' && huisId ) {
-            connection.query('SELECT * FROM view_studentenhuis WHERE ID = ?', req.params.id, function (err, result) {
+            conn.query('SELECT * FROM view_studentenhuis WHERE ID = ?', req.params.id, function (err, result) {
 
                 if (err) {
                     next(new ApiError(err.message, 412));

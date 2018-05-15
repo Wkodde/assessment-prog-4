@@ -98,7 +98,7 @@ module.exports = {
     },
 
     validateToken(req, res, next){
-        console.log('ValidateToken called');
+        console.log('Authentication required');
         const token = req.header('x-access-token') || '';
 
         auth.decodeToken(token, (err, payload) => {
@@ -106,7 +106,7 @@ module.exports = {
                 const error = new ApiError(err.message || err, 401);
                 next(error);
             } else {
-                req.user = payload.sub;
+                req.payload = payload;
                 next();
             }
         });

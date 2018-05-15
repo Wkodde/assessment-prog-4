@@ -45,13 +45,21 @@ describe('Registration', () => {
     })
 
     it('should throw an error when the user already exists', (done) => {
-        // chai.request(server).get('/api/register')
-        // .end((err, res) => {
-        //     res.should.have.status(401);
-            
-        //     done();
-        // });
-        done()
+        chai.request(server).post('/api/register').send({
+            firstname: "random",
+            lastname: "random",
+            email: "test@test.nl",
+            password: "random"
+        }).end((err, res) => {
+            res.should.have.status(412);
+
+            res.body.should.be.a('object');
+            res.body.should.have.property('message');
+            res.body.should.have.property('code');
+            res.body.should.have.property('datetime');
+                       
+            done();
+        });
     })
 
     it('should throw an error when no firstname is provided', (done) => {

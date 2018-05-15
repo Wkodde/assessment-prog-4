@@ -19,7 +19,7 @@ module.exports = {
             assert(email, 'email is vereist');
             assert(password, 'password is vereist');
         } catch (ex){
-            throw new ApiError(ex.message, 400);
+            throw new ApiError(ex.message, 412);
         }
 
         

@@ -1,15 +1,11 @@
-
 let Studentenhuis = require('../model/Studentenhuis');
 const assert = require('assert');
 const moment = require('moment');
 const ApiError = require('../model/ApiError');
 const conn = require('../model/database_connection');
 
-let studentenhuisList = [];
-
 module.exports = {
     createStudenthuis(req, res, next) {
-        console.log('studentenhuiscontroller.createStudentenhuis');
 
         try {
             const naam = req.body.naam;

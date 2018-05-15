@@ -11,6 +11,7 @@ const port = process.env.PORT || config.port || 3000;
 const ApiError = require('./model/ApiError');
 const studenthuis_routes = require('./routes/studentenhuis_routes');
 const authentication_routes = require('./routes/authentication_routes');
+const meal_routes = require('./routes/meal_routes');
 const authentication_controller = require('./controllers/authentication_controller');
 const participant_routes = require('./routes/participant_routes');
 
@@ -36,6 +37,8 @@ app.all('*', authentication_controller.validateToken);
 
 app.use('/api', studenthuis_routes);
 app.use('/api', participant_routes);
+
+app.use('/api', meal_routes);
 
 
 

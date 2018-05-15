@@ -53,7 +53,6 @@ module.exports = {
                 next(new ApiError(err.message, 412));
             } else {
                 result.forEach(item => {
-                    console.log(item);
                     let studentenhuis = new Studentenhuis(item.ID, item.Naam, item.Adres, item.Contact, item.Email);
                     res.status(200).json(studentenhuis);
                 });
@@ -67,32 +66,39 @@ module.exports = {
 
         if(typeof huisId !== 'undefined' && huisId) {
 
-            conn.query('SELECT * FROM studentenhuis WHERE ID = ?', req.params.id, function (err, result) {
-                if (err) {
-                    next(new ApiError(err.message, 404));
-                } else {
-                    if (result.UserID === req.payload.user.id) {
-
-                        const naam = req.body.naam;
-                        const adres = req.body.adres;
-
-                        conn.query('UPDATE studentenhuis SET Naam = ?, Adres = ? WHERE ID = ?', [naam, adres, req.params.id], function (err, result) {
-                            if (err) {
-                                next(new ApiError(err.message, 409));
-                            } else {
-                                conn.query('SELECT * FROM view_studentenhuis WHERE ID = ?', req.params.id, function (err, result) {
-                                    if (err) {
-                                        next(new ApiError(err.message, 404));
-                                    } else {
-                                        studentenhuis = new Studentenhuis(result.ID, result.Naam, result.Adres, result.Contact, result.Email);
-                                        res.status(200).json(studentenhuis).end();
-                                    }
-                                });
-                            }
-                        });
+            conn.query('SELECT * FROM studentenhuis WHERE ID = ?', [req.params.id], function (err, result) {
+                if(result.length > 0) {
+                    result = result[0];
+                    if (err) {
+                        next(new ApiError(err.message, 404));
                     } else {
-                        next(new ApiError('Conflict (Gebruiker mag deze data niet wijzigen)', 409));
+                        if (result.UserID === req.payload.user.id) {
+
+                            const naam = req.body.naam;
+                            const adres = req.body.adres;
+
+                            conn.query('UPDATE studentenhuis SET Naam = ?, Adres = ? WHERE ID = ?', [naam, adres, req.params.id], function (err, result2) {
+
+                                if (err) {
+                                    next(new ApiError(err.message, 409));
+                                } else {
+                                    conn.query('SELECT * FROM view_studentenhuis WHERE ID = ?', [req.params.id], function (err, result3) {
+                                        result3 = result3[0];
+                                        if (err) {
+                                            next(new ApiError(err.message, 404));
+                                        } else {
+                                            studentenhuis = new Studentenhuis(result3.ID, result3.Naam, result3.Adres, result3.Contact, result3.Email);
+                                            res.status(200).json(studentenhuis).end();
+                                        }
+                                    });
+                                }
+                            });
+                        } else {
+                            next(new ApiError('Conflict (Gebruiker mag deze data niet wijzigen)', 409));
+                        }
                     }
+                } else {
+                    next(new ApiError('Niet gevonden (huisId bestaat niet)', 404));
                 }
             });
         } else {
@@ -106,20 +112,25 @@ module.exports = {
         if(typeof huisId !== 'undefined' && huisId) {
 
             conn.query('SELECT * FROM studentenhuis WHERE ID = ?', huisId, function (err, result) {
-                if (err) {
-                    next(new ApiError(err.message, 404));
-                } else {
-                    if (result.UserID === req.payload.user.id) {
-                        conn.query('DELETE FROM studentenhuis WHERE ID = ?', huisId, function (err, result) {
-                            if(err) {
-                                next(new ApiError(err.message, 404));
-                            } else {
-                                res.status(200).json(new ApiError('de verwijdering is geluk', 200)).end();
-                            }
-                        });
+                if(result.length > 0) {
+                    result = result[0];
+                    if (err) {
+                        next(new ApiError(err.message, 404));
                     } else {
-                        next(new ApiError('Conflict (Gebruiker mag deze data niet verwijderen)', 409));
+                        if (result.UserID === req.payload.user.id) {
+                            conn.query('DELETE FROM studentenhuis WHERE ID = ?', huisId, function (err, result) {
+                                if (err) {
+                                    next(new ApiError(err.message, 404));
+                                } else {
+                                    res.status(200).json(new ApiError('de verwijdering is gelukt', 200)).end();
+                                }
+                            });
+                        } else {
+                            next(new ApiError('Conflict (Gebruiker mag deze data niet verwijderen)', 409));
+                        }
                     }
+                } else {
+                    next(new ApiError('Niet gevonden (huisId bestaat niet)', 404));
                 }
             });
         } else {

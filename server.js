@@ -62,3 +62,5 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
 	console.log('The server is listening on port : ' + port)
 })
+
+module.exports = app;

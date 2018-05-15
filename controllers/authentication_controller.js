@@ -28,27 +28,40 @@ module.exports = {
        
         let user = new User(0, firstname, lastname, email, hash);
 
-        values = [[user.firstname, user.lastname, user.email, user.password]];
-
-        conn.query('INSERT INTO user (Voornaam, Achternaam, Email, Password) VALUES ?', [values], function (err, result) {
+        conn.query('SELECT * FROM user WHERE Email = ?', [email], function (err, result) {
             if (err){
                 next(new ApiError(err.message, 412));
             } else {
-                console.log("Success!");
+
+                if(result.length > 0){
+                    next(new ApiError('email is al in gebruik', 412));
+                    return;
+                }
+
+                values = [[user.firstname, user.lastname, user.email, user.password]];
+
+                conn.query('INSERT INTO user (Voornaam, Achternaam, Email, Password) VALUES ?', [values], function (err, result) {
+                    if (err){
+                        next(new ApiError(err.message, 412));
+                    } else {
+                        console.log("Success!");
+                    }
+                });
+        
+        
+                let token = auth.encodeToken({
+                    user: user
+                });
+        
+                let json = {
+                    token: token,
+                    email: user.email
+                };
+        
+                res.status(200).json(json).end();
+
             }
         });
-
-
-        let token = auth.encodeToken({
-            user: user
-        });
-
-        let json = {
-            token: token,
-            email: user.email
-        };
-
-        res.status(200).json(json);
 
     },
 
@@ -71,6 +84,11 @@ module.exports = {
                 next(new ApiError(err.message, 412));
             } else {
 
+                if(result.length === 0){
+                    next(new ApiError("email adres bestaat niet", 412));
+                    return;
+                }
+
                 result.forEach(item => {
 
                     user = new User(item.ID, item.Voornaam, item.Achternaam, item.Email, item.Password);
@@ -89,7 +107,7 @@ module.exports = {
                         email: user.email
                     };
             
-                    res.status(200).json(json);
+                    res.status(200).json(json).end();
                 });
 
             }
@@ -98,7 +116,6 @@ module.exports = {
     },
 
     validateToken(req, res, next){
-        console.log('Authentication required');
         const token = req.header('x-access-token') || '';
 
         auth.decodeToken(token, (err, payload) => {

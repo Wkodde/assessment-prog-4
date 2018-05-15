@@ -44,9 +44,7 @@ app.use('/api', meal_routes);
 
 
 app.use((err, req, res, next) => {
-    console.log('Catch-all error handler was called.');
-    console.log(err);
-
+    
     res.status(err.code || 400).json(err).end();
 })
 

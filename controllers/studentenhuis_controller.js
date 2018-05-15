@@ -52,10 +52,12 @@ module.exports = {
             if (err){
                 next(new ApiError(err.message, 412));
             } else {
-                result.forEach(item => {
-                    let studentenhuis = new Studentenhuis(item.ID, item.Naam, item.Adres, item.Contact, item.Email);
-                    res.status(200).json(studentenhuis);
-                });
+                let studentenhuizen = [];
+                for(let i = 0; i < result.length; i++) {
+                    let studentenhuis = new Studentenhuis(result[i].ID, result[i].Naam, result[i].Adres, result[i].Contact, result[i].Email);
+                    studentenhuizen.push(studentenhuis);
+                }
+                res.status(200).json(studentenhuizen).end();
             }
         });
     },

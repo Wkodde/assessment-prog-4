@@ -3,16 +3,16 @@
  * GLOBAL VARIABLES
  * -------------------
  */
-const express = require('express')
-const morgan = require('morgan')
-const bodyParser = require('body-parser')
-const config = require("./config/config")
-const port = process.env.PORT || config.port || 3000
-const ApiError = require('./model/ApiError')
-const studenthuis_routes = require('./routes/studentenhuis_routes')
+const express = require('express');
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const config = require("./config/config");
+const port = process.env.PORT || config.port || 3000;
+const ApiError = require('./model/ApiError');
+const studenthuis_routes = require('./routes/studentenhuis_routes');
 const authentication_routes = require('./routes/authentication_routes');
 const authentication_controller = require('./controllers/authentication_controller');
-
+const participant_routes = require('./routes/participant_routes');
 
 /**
  * -------------------
@@ -35,6 +35,7 @@ app.use('/api', authentication_routes);
 app.all('*', authentication_controller.validateToken);
 
 app.use('/api', studenthuis_routes);
+app.use('/api', participant_routes);
 
 
 

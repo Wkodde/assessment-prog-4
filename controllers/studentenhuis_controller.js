@@ -70,17 +70,16 @@ module.exports = {
                     } else {
                         if (result.UserID === req.payload.user.id) {
 
-                            try {
-
                                 const naam = req.body.naam;
                                 const adres = req.body.adres;
 
-                                if(typeof naam === 'undefined' || typeof adres === 'undefined') {
-                                    next(new ApiError('Een of meer properties in de request body ontbreken of zijn foutief', 412));
+                                try {
+                                    assert(naam, 'Naam is vereist');
+                                    assert(adres, 'adres is vereist');
+                                } catch (ex) {
+                                    next(new ApiError(ex.message, 412));
                                     return;
                                 }
-                                assert(naam, 'Naam is vereist');
-                                assert(adres, 'adres is vereist');
 
                                 conn.query('UPDATE studentenhuis SET Naam = ?, Adres = ? WHERE ID = ?', [naam, adres, req.params.id], function (err, result2) {
 
@@ -98,9 +97,6 @@ module.exports = {
                                         });
                                     }
                                 });
-                            } catch (ex) {
-                                throw(new ApiError(ex.message, 412));
-                            }
 
                         } else {
                             next(new ApiError('Conflict (Gebruiker mag deze data niet wijzigen)', 409));

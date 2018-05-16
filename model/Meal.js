@@ -1,4 +1,3 @@
-
 class Meal {
 
     constructor(ID, name, description, ingredients, allergie, price ) {
@@ -10,9 +9,6 @@ class Meal {
         this.price = price;
     }
 
-    getID() {
-        return this.ID;
-    }
 }
 
 module.exports = Meal;

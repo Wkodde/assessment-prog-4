@@ -20,7 +20,7 @@ const participant_routes = require('./routes/participant_routes');
  * INITIALIZATION AND SETTINGS SERVER
  * ------------------- 
  */
-let app = express()
+let app = express();
 
 app.use(bodyParser.json());
 app.use(morgan('dev'));
@@ -33,22 +33,17 @@ app.use(morgan('dev'));
 
 app.use('/api', authentication_routes);
 
-app.all('*', authentication_controller.validateToken);
-
 app.use('/api', studenthuis_routes);
+app.use('/api', meal_routes);
 app.use('/api', participant_routes);
 
-app.use('/api', meal_routes);
-
-
-
-
+/**
+ * Error handling route
+ */
 app.use((err, req, res, next) => {
     
     res.status(err.code || 400).json(err).end();
 })
-
-
 
 
  /**

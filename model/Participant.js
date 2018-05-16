@@ -1,4 +1,3 @@
-
 class Participant {
 
     constructor(userID, studentenhuisID, maaltijdID, voornaam, achternaam, email) {

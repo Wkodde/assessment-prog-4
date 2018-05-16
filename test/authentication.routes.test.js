@@ -33,7 +33,7 @@ describe('Registration', () => {
                        
             done();
         });
-    })
+    });
 
     it('should return an error on GET request', (done) => {
         chai.request(server).get('/api/register')
@@ -42,7 +42,7 @@ describe('Registration', () => {
             
             done();
         });
-    })
+    });
 
     it('should throw an error when the user already exists', (done) => {
         chai.request(server).post('/api/register').send({
@@ -60,7 +60,7 @@ describe('Registration', () => {
                        
             done();
         });
-    })
+    });
 
     it('should throw an error when no firstname is provided', (done) => {
         chai.request(server).post('/api/register').send({
@@ -77,7 +77,7 @@ describe('Registration', () => {
        
             done();
         });
-    })
+    });
 
     it('should throw an error when firstname is shorter than 2 chars', (done) => {
         chai.request(server).post('/api/register').send({
@@ -95,7 +95,7 @@ describe('Registration', () => {
        
             done();
         });
-    })
+    });
 
     it('should throw an error when no lastname is provided', (done) => {
         chai.request(server).post('/api/register').send({
@@ -112,7 +112,7 @@ describe('Registration', () => {
        
             done();
         });
-    })
+    });
 
     it('should throw an error when lastname is shorter than 2 chars', (done) => {
         chai.request(server).post('/api/register').send({
@@ -130,7 +130,7 @@ describe('Registration', () => {
        
             done();
         });
-    })
+    });
 
     it('should throw an error when email is invalid', (done) => {
         chai.request(server).post('/api/register').send({
@@ -148,9 +148,9 @@ describe('Registration', () => {
        
             done();
         });
-    })
+    });
 
-})
+});
 
 describe('Login', () => {
 
@@ -167,7 +167,7 @@ describe('Login', () => {
 
             done();
         });
-    })
+    });
 
     it('should throw an error when email does not exist', (done) => {
         chai.request(server).post('/api/login').send({
@@ -182,7 +182,7 @@ describe('Login', () => {
             res.body.should.have.property('datetime');
             done();
         });
-    })
+    });
 
     it('should throw an error when email exists but password is invalid', (done) => {
         chai.request(server).post('/api/login').send({
@@ -197,7 +197,7 @@ describe('Login', () => {
             res.body.should.have.property('datetime');
             done();
         });
-    })
+    });
 
     it('should throw an error when using an invalid email', (done) => {
         chai.request(server).post('/api/login').send({
@@ -212,6 +212,6 @@ describe('Login', () => {
             res.body.should.have.property('datetime');
             done();
         });
-    })
+    });
 
-})
+});

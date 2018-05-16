@@ -2,7 +2,6 @@ const config = require('../config/config');
 const moment = require('moment');
 const jwt = require('jwt-simple');
 
-
 function encodeToken(data) {
     const playload = {
         exp: moment().add(10, 'days').unix(),
@@ -31,4 +30,4 @@ function decodeToken(token, callback) {
 module.exports = {
     encodeToken,
     decodeToken
-}
+};

@@ -1,6 +1,5 @@
 let Studentenhuis = require('../model/Studentenhuis');
 const assert = require('assert');
-const moment = require('moment');
 const ApiError = require('../model/ApiError');
 const conn = require('../model/database_connection');
 
@@ -27,8 +26,7 @@ module.exports = {
                 if (err){
                     next(new ApiError(err.message, 412));
                 } else {
-                    studenthuis.setID(result.insertId);
-                    console.log("Success!");
+                    studenthuis.ID = result.insertId;
 
                     res.status(200).json(studenthuis).end();                    
                 }
@@ -72,25 +70,38 @@ module.exports = {
                     } else {
                         if (result.UserID === req.payload.user.id) {
 
-                            const naam = req.body.naam;
-                            const adres = req.body.adres;
+                            try {
 
-                            conn.query('UPDATE studentenhuis SET Naam = ?, Adres = ? WHERE ID = ?', [naam, adres, req.params.id], function (err, result2) {
+                                const naam = req.body.naam;
+                                const adres = req.body.adres;
 
-                                if (err) {
-                                    next(new ApiError(err.message, 409));
-                                } else {
-                                    conn.query('SELECT * FROM view_studentenhuis WHERE ID = ?', [req.params.id], function (err, result3) {
-                                        result3 = result3[0];
-                                        if (err) {
-                                            next(new ApiError(err.message, 404));
-                                        } else {
-                                            studentenhuis = new Studentenhuis(result3.ID, result3.Naam, result3.Adres, result3.Contact, result3.Email);
-                                            res.status(200).json(studentenhuis).end();
-                                        }
-                                    });
+                                if(typeof naam === 'undefined' || typeof adres === 'undefined') {
+                                    next(new ApiError('Een of meer properties in de request body ontbreken of zijn foutief', 412));
+                                    return;
                                 }
-                            });
+                                assert(naam, 'Naam is vereist');
+                                assert(adres, 'adres is vereist');
+
+                                conn.query('UPDATE studentenhuis SET Naam = ?, Adres = ? WHERE ID = ?', [naam, adres, req.params.id], function (err, result2) {
+
+                                    if (err) {
+                                        next(new ApiError(err.message, 409));
+                                    } else {
+                                        conn.query('SELECT * FROM view_studentenhuis WHERE ID = ?', [req.params.id], function (err, result3) {
+                                            result3 = result3[0];
+                                            if (err) {
+                                                next(new ApiError(err.message, 404));
+                                            } else {
+                                                studentenhuis = new Studentenhuis(result3.ID, result3.Naam, result3.Adres, result3.Contact, result3.Email);
+                                                res.status(200).json(studentenhuis).end();
+                                            }
+                                        });
+                                    }
+                                });
+                            } catch (ex) {
+                                throw(new ApiError(ex.message, 412));
+                            }
+
                         } else {
                             next(new ApiError('Conflict (Gebruiker mag deze data niet wijzigen)', 409));
                         }
@@ -116,11 +127,21 @@ module.exports = {
                         next(new ApiError(err.message, 404));
                     } else {
                         if (result.UserID === req.payload.user.id) {
-                            conn.query('DELETE FROM studentenhuis WHERE ID = ?', huisId, function (err, result) {
+                            conn.query('SELECT * FROM maaltijd WHERE StudentenhuisID = ?', huisId, function (err, result) {
                                 if (err) {
                                     next(new ApiError(err.message, 404));
                                 } else {
-                                    res.status(200).json(new ApiError('de verwijdering is gelukt', 200)).end();
+                                    if(result.length === 0) {
+                                        conn.query('DELETE FROM studentenhuis WHERE ID = ?', huisId, function (err, result) {
+                                            if (err) {
+                                                next(new ApiError(err.message, 404));
+                                            } else {
+                                                res.status(200).json(new ApiError('de verwijdering is gelukt', 200)).end();
+                                            }
+                                        });
+                                    } else {
+                                        next(new ApiError('Conflict (Studentenhuis bevat maaltijden)', 409));
+                                    }
                                 }
                             });
                         } else {

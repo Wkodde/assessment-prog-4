@@ -309,24 +309,57 @@ describe('Studentenhuis API DELETE', () => {
     });
 
     it('should return a succesfull delete message when deleting a studentenhuis', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-        done()
-    })
+        chai.request(server)
+            .delete('/api/studentenhuis/' + studentenhuisID)
+            .set(
+                "x-access-token", token
+            )
+            .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+
+                let response = res.body;
+                response.should.have.property('message');
+                response.should.have.property('code');
+                response.should.have.property('datetime');
+                done();
+            });
+    });
 
     it('should throw an error when there are meals in a studentenhuis', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-        done()
-    })
+        chai.request(server)
+            .delete('/api/studentenhuis/1')
+            .set(
+                "x-access-token", token
+            )
+            .end((err, res) => {
+                res.should.have.status(409);
+                res.body.should.be.a('object');
+
+                let response = res.body;
+                response.should.have.property('message');
+                response.should.have.property('code');
+                response.should.have.property('datetime');
+                done();
+            });
+    });
 
 
     it('should throw an error when the user is not the creator of studentenhuis', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-        done()
+        chai.request(server)
+            .delete('/api/studentenhuis/' + studentenhuisID)
+            .set(
+                "x-access-token", invalidToken
+            )
+            .end((err, res) => {
+                res.should.have.status(401);
+                res.body.should.be.a('object');
+
+                let response = res.body;
+                response.should.have.property('message');
+                response.should.have.property('code');
+                response.should.have.property('datetime');
+                done();
+            });
     })
-})
+});
